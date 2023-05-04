@@ -63,16 +63,32 @@ def login():
                 'logged_in_at': datetime.now(),
                 'user_type': 'basic' if request.form.get('username') not in priviledged_users else 'pirviledged'
             }
-            return user_details
+            return redirect(url_for('homepage'))
         else:
             error = "Invalid credentials - username or password not found ! "
     return render_template('login.html', error=error)
 
 
 @app.route('/home', methods=['GET', 'POST'])
-def get_details():
-    return login()
+def homepage():
+    if request.method == 'POST' and request.form.get('action') == 'scan':
+        return redirect(url_for('scanUsers'))
+    if request.method == 'POST' and request.form.get('action') == 'create':
+        return redirect(url_for('createUsers'))
+    return render_template('homepage.html')
 
+
+@app.route('/scan', methods=['GET','POST'])
+def scanUsers():
+    if request.method == 'POST':
+        pass
+    return render_template('scanUsers.html')
+
+@app.route('/create', methods=['GET','POST'])
+def createUsers():
+    if request.method == 'POST':
+        pass
+    return render_template('createUser.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000/login)
+    app.run(debug=True, port=5000)

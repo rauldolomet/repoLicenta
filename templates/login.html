@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Flask Intro - login page</title>
+    <title>Log in page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
@@ -9,14 +9,15 @@
   </head>
   <body style="background-color : black">
     <center><div class="container"><br><br>
-      <h1 style="color : #26f107">DATA GUARDIAN</h1><br><br>
+      <h1 style="color : #26f107">D&nbsp;A&nbsp;T&nbsp;A&nbsp; 
+        G&nbsp;U&nbsp;A&nbsp;R&nbsp;D&nbsp;I&nbsp;A&nbsp;N</h1><br><br>
       <i class="fa fa-user-secret" aria-hidden="true" style="color : #26f107; font-size: 70px;"></i>
       <br><br><br><br>
       <form action="" method="post">
-        <input style="width: 300px; height: 50px; background-color: #08282c; color : #26f107" type="text" placeholder="Username" name="username" value="{{
+        <input style="border-radius: 12px; width: 300px; height: 50px; background-color: #08282c; color : #26f107" type="text" placeholder="Username" name="username" value="{{
           request.form.username }}" style="background-color: #08282c"><br><br>
-         <input style="width: 300px; height: 50px; background-color: #08282c; color : #26f107" type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}"><br><br>
+         <input style=" border-radius: 12px; width: 300px; height: 50px; background-color: #08282c; color : #26f107" type="password" placeholder="Password" name="password" value="{{
+          request.form.password }}"><br><br><br>
         <input style="background-color: #26f107; color : #08282c; border-radius: 12px; width: 150px; height: 50px; font-weight: bold;" class="btn btn-default" type="submit" value="Log in">
         <br><br>
       </form>
