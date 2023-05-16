@@ -14,7 +14,7 @@ dynamoDB = boto3.resource('dynamodb')
 
 
 table = dynamoDB.create_table(
-    TableName='udkjfsjfsdfst1212111',
+    TableName='udkjfdfst324241',
     KeySchema=[
         {
             'AttributeName': 'username',
