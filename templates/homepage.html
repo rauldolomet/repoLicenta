@@ -2,24 +2,51 @@
   <head>
     <title>Homepage</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
     <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
   </head>
   <body style="background-color : black">
+
+
+
+
+
+
+
+
+    <style>
+      .zoom {
+        padding: 0px;
+        background-color: black;
+        transition: transform .2s; /* Animation */
+        
+      }
+      
+      .zoom:hover {
+        transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+      }
+      </style>
+      
+
+
+
+
+
+
     <center><div class="container"><br><br>
       <h1 style="color : #26f107">DATA GUARDIAN</h1><br><br>
-      <i class="fa fa-user-secret" aria-hidden="true" style="color : #26f107; font-size: 70px;"></i>
+      <i class="fa fa-user-secret" aria-hidden="true" style="color : #26f107; font-size: 120px;"></i>
       <br><br><br><br><br><br>
 
       <form action="scan", method="post">
-        <button type="submit" name="scan_users" style="border-color : #26f107; background-color: black; color : #26f107; border-radius: 12px; width: 200px; height: 150px; font-weight: bold;" class="btn btn-default">Scan users</button>
-       
-       
+        <button class="zoom" type="submit" name="scan_users" style="border-color : #26f107; background-color: black; color : #26f107; border-radius: 12px; width: 200px; height: 150px; font-weight: bold;" class="btn btn-default">Scan user</button>
+        <br><br>
       </form>
       <form action="create", method="post">
-        <button type="submit" name="scan_users" style="border-color : #26f107; background-color: black; color : #26f107; border-radius: 12px; width: 200px; height: 150px; font-weight: bold;" class="btn btn-default">Cerate user</button>
+        <button class="zoom" type="submit" name="scan_users" style="border-color : #26f107; background-color: black; color : #26f107; border-radius: 12px; width: 200px; height: 150px; font-weight: bold;" class="btn btn-default">Create user</button>
         <br><br>
         </form>
         </div>

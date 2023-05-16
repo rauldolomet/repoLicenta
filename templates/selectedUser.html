@@ -1,0 +1,80 @@
+<!-- <html>
+  <head>
+    <title>Homepage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="./homeStyles.css">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+  </head>
+  <body style="background-color : black">
+    <center><div class="container"><br><br>
+      <h1 style="color : #26f107">DATAGUARDIAN</h1><br><br>
+      <i class="fa fa-user-secret" aria-hidden="true" style="color : #26f107; font-size: 120px;"></i>
+      </div><br><br><br><br>
+      <label style="color: #26f107; font-weight: bold;">Loading info about selected user ...</label> 
+
+      </center>
+      </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title of the document</title>
+    <style>
+      body {
+        padding: 40px;
+        background-color: #666666;
+      }
+      #main {
+        height: 40px;
+        white-space: nowrap;
+        overflow: hidden;
+        font-family: 'Source Code Pro', monospace;
+        font-size: 28px;
+        color: rgba(255, 255, 255, .70);
+        position: relative;
+      }
+      #border {
+        border-bottom: solid 3px rgba(0, 255, 0, .75);
+        position: absolute;
+        right: -7px;
+        width: 20px;
+      }
+      /* Animation */
+      #main {
+        animation: animated-text 2s steps(30, end) 1s 1 normal both
+      }
+      #border {
+        animation: animated-cursor 600ms steps(30, end) infinite;
+      }
+      /* text animation */
+      @keyframes animated-text {
+        from {
+          width: 0;
+        }
+        to {
+          width: 480px;
+        }
+      }
+      /* cursor animations */
+      @keyframes animated-cursor {
+        from {
+          border-bottom-color: rgba(0, 255, 0, .75);
+        }
+        to {
+          border-bottom-color: transparent;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      Once upon a time...
+      <div id="border"></div>
+    </div>
+  </body>
+</html>
