@@ -139,7 +139,7 @@ or a(some) record(s) found
 
 @app.route('/scan', methods=['GET', 'POST'])
 def scanUsers():
-    userFound = True
+    err = None
     if request.method == 'POST':
         if request.form.get('username') in users.keys() or request.form.get('username')=="":
             return redirect(url_for('displaySelectedUser'))
