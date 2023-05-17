@@ -13,38 +13,36 @@ app = Flask(__name__)
 dynamoDB = boto3.resource('dynamodb')
 
 
-table = dynamoDB.create_table(
-    TableName='udkjfdfst324241',
-    KeySchema=[
-        {
-            'AttributeName': 'username',
-            'KeyType': 'HASH'
-        },
-        {
-            'AttributeName': 'password',
-            'KeyType': 'RANGE'
-        }
-    ],
-    AttributeDefinitions=[
-        {
-            'AttributeName': 'username',
-            'AttributeType': 'S'
-        },
-        {
-            'AttributeName': 'password',
-            'AttributeType': 'S'
-        }
-    ],
-    ProvisionedThroughput={
+# table = dynamoDB.create_table(
+#     TableName='udkjfdfst324241',
+#     KeySchema=[
+#         {
+#             'AttributeName': 'username',
+#             'KeyType': 'HASH'
+#         },
+#         {
+#             'AttributeName': 'password',
+#             'KeyType': 'RANGE'
+#         }
+#     ],
+#     AttributeDefinitions=[
+#         {
+#             'AttributeName': 'username',
+#             'AttributeType': 'S'
+#         },
+#         {
+#             'AttributeName': 'password',
+#             'AttributeType': 'S'
+#         }
+#     ],
+#     ProvisionedThroughput={
         
-            'ReadCapacityUnits': 5,
-            'WriteCapacityUnits': 5
+#             'ReadCapacityUnits': 5,
+#             'WriteCapacityUnits': 5
         
-    }
-)
+#     }
+# )
 
-
-print("Items in the AWS table: " + str(table.item_count))
 
 '''
 Define some basic level users.
@@ -139,11 +137,15 @@ or a(some) record(s) found
 
 @app.route('/scan', methods=['GET', 'POST'])
 def scanUsers():
-    err = None
     if request.method == 'POST':
-        if request.form.get('username') in users.keys() or request.form.get('username')=="":
+        if request.form.get('username') in users.keys():
             return redirect(url_for('displaySelectedUser'))
-    err = "Couldn't find user"
+        else:
+            if request.form.get('username') == "" or request.form.get('username') is None: 
+                err = None
+            else:
+                err = " User not found"
+
     return render_template('scanUsers.html', err=err)
 
 
@@ -157,10 +159,28 @@ willa utomatically be loaded into the AWS Database
 
 @app.route('/create', methods=['GET', 'POST'])
 def createUsers():
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    crime = request.form.get('crime')
+    represents_immediate_danger = request.form.get('represents_immediate_danger')
     if request.method == 'POST':
-        pass
+        client = boto3.resource('dynamodb')
+        table = client.Table('Convicted_Fellons')
+        input={
+                'first_name': first_name if first_name is not None else "*",
+                'last_name': last_name if last_name is not None else "*",
+                'crime': crime if crime is not None else "*",
+                'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
+        table.put_item(Item=input)
+        table.delete_item(Key={'first_name':'*'})
     return render_template('createUser.html')
-
+# @app.route('/loadData', methods=['GET', 'POST'])
+# def loadData():
+#     first_name = request.form.get('first_name')
+#     last_name = request.form.get('last_name')
+#     print("First name: " + str(first_name))
+#     print("last name: " + str(last_name))
+#     return {'first_name': first_name}
 
 @app.route('/results', methods=['GET', 'POST'])
 def displaySelectedUser():
@@ -168,11 +188,6 @@ def displaySelectedUser():
         return redirect(url_for('getAWSData'))
 
     return render_template('selectedUser.html')
-
-
-@app.route('/NotFoundErr')
-def userNotFoundErr():
-    return "err user not found"
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

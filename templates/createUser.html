@@ -14,13 +14,15 @@
       <i class="fa fa-user-secret" aria-hidden="true" style="color : #26f107; font-size: 120px;"></i>
       </div><br><br><br><br>
       <form action="" method="post">
-        <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="First name" name="username" value="{{
-          request.form.username }}" style="background-color: #08282c"><br><br>
-          <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="Last name" name="username" value="{{
-            request.form.username }}" style="background-color: #08282c"><br><br>
-            <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="Age" name="username" value="{{
-                request.form.username }}" style="background-color: #08282c"><br><br>
-        <input style="background-color: #26f107; color : #08282c; border-radius: 12px; width: 150px; height: 50px; font-weight: bold;" class="btn btn-default" type="submit" value="Create">
+        <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="First name" name="first_name" value="{{
+          request.form.first_name }}" style="background-color: #08282c"><br><br>
+          <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="Last name" name="last_name" value="{{
+            request.form.last_name }}" style="background-color: #08282c"><br><br>
+            <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="Crime" name="crime" value="{{
+                request.form.crime }}" style="background-color: #08282c"><br><br>
+                <input style="border-color: #26f107; width: 300px; height: 50px; background-color: #08282c; color : #26f107; border-radius: 12px;" type="text" placeholder="Dangerous" name="represents_immediate_danger" value="{{
+                  request.form.represents_immediate_danger }}" style="background-color: #08282c"><br><br>
+        <input style="background-color: #26f107; color : #08282c; border-radius: 12px; width: 150px; height: 50px; font-weight: bold;" class="btn btn-default" type="submit" value="Create" method="post">
         <br><br>
       </form>
       </center>
