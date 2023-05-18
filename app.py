@@ -10,40 +10,6 @@ import time
 app = Flask(__name__)
 
 
-dynamoDB = boto3.resource('dynamodb')
-
-
-# table = dynamoDB.create_table(
-#     TableName='udkjfdfst324241',
-#     KeySchema=[
-#         {
-#             'AttributeName': 'username',
-#             'KeyType': 'HASH'
-#         },
-#         {
-#             'AttributeName': 'password',
-#             'KeyType': 'RANGE'
-#         }
-#     ],
-#     AttributeDefinitions=[
-#         {
-#             'AttributeName': 'username',
-#             'AttributeType': 'S'
-#         },
-#         {
-#             'AttributeName': 'password',
-#             'AttributeType': 'S'
-#         }
-#     ],
-#     ProvisionedThroughput={
-        
-#             'ReadCapacityUnits': 5,
-#             'WriteCapacityUnits': 5
-        
-#     }
-# )
-
-
 '''
 Define some basic level users.
 These users will only benefit from a restricted
@@ -180,13 +146,6 @@ def createUsers():
         time.sleep(2)
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
-# @app.route('/loadData', methods=['GET', 'POST'])
-# def loadData():
-#     first_name = request.form.get('first_name')
-#     last_name = request.form.get('last_name')
-#     print("First name: " + str(first_name))
-#     print("last name: " + str(last_name))
-#     return {'first_name': first_name}
 
 @app.route('/results', methods=['GET', 'POST'])
 def displaySelectedUser():
