@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from datetime import datetime
 import boto3
 import key_config as keys
-
+import time
 app = Flask(__name__)
 
 
@@ -51,6 +51,7 @@ access level.
 '''
 
 users = {
+    'ted' : 'bundy',
     'raul': 'Raul1611@',
     'alex': 'alex',
     'steph': 'steph',
@@ -159,6 +160,7 @@ willa utomatically be loaded into the AWS Database
 
 @app.route('/create', methods=['GET', 'POST'])
 def createUsers():
+    msg = None
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
     crime = request.form.get('crime')
@@ -173,7 +175,11 @@ def createUsers():
                 'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
         table.put_item(Item=input)
         table.delete_item(Key={'first_name':'*'})
-    return render_template('createUser.html')
+    if first_name is not None and last_name is not None: 
+        msg = "Successfully added " + str(first_name) + " " + str(last_name)
+        time.sleep(2)
+        return redirect(url_for('createUsers'))
+    return render_template('createUser.html', msg=msg)
 # @app.route('/loadData', methods=['GET', 'POST'])
 # def loadData():
 #     first_name = request.form.get('first_name')
@@ -184,10 +190,17 @@ def createUsers():
 
 @app.route('/results', methods=['GET', 'POST'])
 def displaySelectedUser():
-    if request.method == 'POST':
-        return redirect(url_for('getAWSData'))
-
-    return render_template('selectedUser.html')
+        response = None
+        client = boto3.resource('dynamodb')
+        table = client.Table('Convicted_Fellons')
+        scanned = request.form.get('username')
+        response = table.get_item(Key={'first_name': 'ted' })
+        response = response['Item']
+        response_fname = {'First name ': response['first_name']}
+        response_lname = {'Last name: ': response['last_name']}
+        response_crime = {'Crime commited ': response['crime']}
+        response_danger = {'Represents an immediate danger': response['represents_immediate_danger']}
+        return render_template('selectedUser.html', response_fname = response_fname, response_lname = response_lname, response_crime = response_crime, response_danger = response_danger)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

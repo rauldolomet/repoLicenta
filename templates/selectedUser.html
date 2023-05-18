@@ -27,7 +27,7 @@
     <style>
       body {
         padding: 40px;
-        background-color: #666666;
+        background-color: black;
       }
       #main {
         height: 40px;
@@ -35,7 +35,7 @@
         overflow: hidden;
         font-family: 'Source Code Pro', monospace;
         font-size: 28px;
-        color: rgba(255, 255, 255, .70);
+        color: #26f107;
         position: relative;
       }
       #border {
@@ -46,18 +46,20 @@
       }
       /* Animation */
       #main {
-        animation: animated-text 2s steps(30, end) 1s 1 normal both
+        animation: animated-text 3s steps(30, end) 1s 1 normal both
       }
       #border {
-        animation: animated-cursor 600ms steps(30, end) infinite;
+        animation: animated-cursor 400ms steps(30, end) infinite;
       }
       /* text animation */
       @keyframes animated-text {
         from {
+          height:0;
           width: 0;
         }
         to {
-          width: 480px;
+          width: 2000px;
+          height: 2000px;
         }
       }
       /* cursor animations */
@@ -73,7 +75,11 @@
   </head>
   <body>
     <div id="main">
-      Once upon a time...
+      {{ response }} <br>
+      {{ response_fname }} <br>
+      {{ response_lname }} <br>
+      {{ response_crime }} <br>
+      {{ response_danger }} <br>
       <div id="border"></div>
     </div>
   </body>
