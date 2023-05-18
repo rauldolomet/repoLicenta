@@ -104,6 +104,7 @@ or a(some) record(s) found
 
 @app.route('/scan', methods=['GET', 'POST'])
 def scanUsers():
+    err = None
     if request.method == 'POST':
         if request.form.get('username') in users.keys():
             return redirect(url_for('displaySelectedUser'))
@@ -153,13 +154,14 @@ def displaySelectedUser():
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
         scanned = request.form.get('username')
-        response = table.get_item(Key={'first_name': 'ted' })
+        response = table.get_item(Key={'first_name': 'ted'})
         response = response['Item']
         response_fname = {'First name ': response['first_name']}
         response_lname = {'Last name: ': response['last_name']}
         response_crime = {'Crime commited ': response['crime']}
         response_danger = {'Represents an immediate danger': response['represents_immediate_danger']}
         return render_template('selectedUser.html', response_fname = response_fname, response_lname = response_lname, response_crime = response_crime, response_danger = response_danger)
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
