@@ -1,7 +1,7 @@
-                                                                    DATA GUARDIAN
+                                              DATA GUARDIAN
 
 
 
-                                              Bachelor's thesis code for CS and Systems Engineering    
+                            Bachelor's thesis code for CS and Systems Engineering    
                                                                                 
-                                                                                   by Raul-Dan Dolomet
+                                                              by Raul-Dan Dolomet
