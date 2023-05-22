@@ -1,5 +1,5 @@
 
-from flask import Flask, jsonify, redirect, request, render_template, url_for
+from flask import Flask, jsonify, redirect, request, render_template, url_for, session
 import requests
 import json
 from fastapi import FastAPI
@@ -7,8 +7,10 @@ from datetime import datetime
 import boto3
 import key_config as keys
 import time
+from boto3.dynamodb.conditions import Key
 app = Flask(__name__)
 
+app.config['SESSION_TYPE'] = 'filesystem'
 
 '''
 Define some basic level users.
@@ -68,7 +70,7 @@ def login():
                 'user': request.form.get('username'),
                 'password': len(str(request.form.get('password'))) * '*' if request.form.get('username') != 'admin' else request.form.get('password'),
                 'logged_in_at': datetime.now(),
-                'user_type': 'basic' if request.form.get('username') not in priviledged_users else 'pirviledged'
+                'user_type': 'basic' if request.form.get('username') not in priviledged_users else 'priviledged'
             }
             return redirect(url_for('homepage'))
         else:
@@ -102,18 +104,34 @@ or a(some) record(s) found
 '''
 
 
-@app.route('/scan', methods=['GET', 'POST'])
+@app.route('/scan', methods=['GET','POST'])
 def scanUsers():
     err = None
-    if request.method == 'POST':
-        if request.form.get('username') in users.keys():
-            return redirect(url_for('displaySelectedUser'))
-        else:
-            if request.form.get('username') == "" or request.form.get('username') is None: 
-                err = None
-            else:
-                err = " User not found"
-
+    if request.method == 'GET':
+        # render_template('scanUsers.html')
+        # client = boto3.resource('dynamodb')
+        # table = client.Table('Convicted_Fellons')
+        # response  = table.query(KeyConditionExpression=Key('first_name').eq(str(request.form.get('username'))))
+        # if response is not None: 
+        #     user_info = response['Items']
+        #     return render_template('selectedUser.html', user_info = user_info)
+        # else:
+        #     if request.form.get('username') == "" or request.form.get('username') is None: 
+        #         err = None
+        #     else:
+        #         err = " User not found"
+        scanned_user = request.args.get('username')
+        client = boto3.resource('dynamodb')
+        table = client.Table('Convicted_Fellons')
+        response = table.query(KeyConditionExpression=Key('first_name').eq(str(scanned_user)))
+        if response is not None:
+            first_name = response['Items'][0]['first_name']
+            last_name = response['Items'][0]['last_name']
+            crime = response['Items'][0]['crime']
+            dangerous = response['Items'][0]['represents_immediate_danger']
+            print("User scanned : " + str(scanned_user))
+            print("Response aws: " + str(response['Items']))
+            return render_template('selectedUser.html', first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous)
     return render_template('scanUsers.html', err=err)
 
 
@@ -148,19 +166,21 @@ def createUsers():
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
 
-@app.route('/results', methods=['GET', 'POST'])
+@app.route('/results', methods=['GET','POST'])
 def displaySelectedUser():
-        response = None
+    response = None
+    if request.method == 'POST':
+
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
-        scanned = request.form.get('username')
-        response = table.get_item(Key={'first_name': 'ted'})
+        response = table.get_item(Key = {'first_name' : {'S': request.form["username"] }})       
         response = response['Item']
         response_fname = {'First name ': response['first_name']}
         response_lname = {'Last name: ': response['last_name']}
         response_crime = {'Crime commited ': response['crime']}
         response_danger = {'Represents an immediate danger': response['represents_immediate_danger']}
-        return render_template('selectedUser.html', response_fname = response_fname, response_lname = response_lname, response_crime = response_crime, response_danger = response_danger)
+        print(str(response))
+    return render_template('selectedUser.html', response=response)# response_fname = response_fname, response_lname = response_lname, response_crime = response_crime, response_danger = response_danger)
     
 
 if __name__ == '__main__':
