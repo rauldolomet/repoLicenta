@@ -10,7 +10,7 @@ butoane de return home (sau alte rute) unde e necesar pe rute
 
 Dupa diferentierea pe security levels, add new user - in usersTable cu sec_lvl <= current_user
 
-
+comentarii pe fiecare ruta / functie
 
  
 
