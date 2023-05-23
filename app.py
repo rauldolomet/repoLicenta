@@ -161,22 +161,5 @@ def createUsers():
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
 
-@app.route('/results', methods=['GET','POST'])
-def displaySelectedUser():
-    response = None
-    if request.method == 'POST':
-
-        client = boto3.resource('dynamodb')
-        table = client.Table('Convicted_Fellons')
-        response = table.get_item(Key = {'first_name' : {'S': request.form["username"] }})       
-        response = response['Item']
-        response_fname = {'First name ': response['first_name']}
-        response_lname = {'Last name: ': response['last_name']}
-        response_crime = {'Crime commited ': response['crime']}
-        response_danger = {'Represents an immediate danger': response['represents_immediate_danger']}
-        print(str(response))
-    return render_template('selectedUser.html', response=response)# response_fname = response_fname, response_lname = response_lname, response_crime = response_crime, response_danger = response_danger)
-    
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
