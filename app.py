@@ -107,31 +107,26 @@ or a(some) record(s) found
 @app.route('/scan', methods=['GET','POST'])
 def scanUsers():
     err = None
+    danger_color_code=None
     if request.method == 'GET':
-        # render_template('scanUsers.html')
-        # client = boto3.resource('dynamodb')
-        # table = client.Table('Convicted_Fellons')
-        # response  = table.query(KeyConditionExpression=Key('first_name').eq(str(request.form.get('username'))))
-        # if response is not None: 
-        #     user_info = response['Items']
-        #     return render_template('selectedUser.html', user_info = user_info)
-        # else:
-        #     if request.form.get('username') == "" or request.form.get('username') is None: 
-        #         err = None
-        #     else:
-        #         err = " User not found"
         scanned_user = request.args.get('username')
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
         response = table.query(KeyConditionExpression=Key('first_name').eq(str(scanned_user)))
-        if response is not None:
+        if len(response['Items']) > 0:
+            full_response = response
             first_name = response['Items'][0]['first_name']
             last_name = response['Items'][0]['last_name']
             crime = response['Items'][0]['crime']
             dangerous = response['Items'][0]['represents_immediate_danger']
+            danger_color_code = 'red' if dangerous.lower() != 'no' else '#26f107'
             print("User scanned : " + str(scanned_user))
             print("Response aws: " + str(response['Items']))
-            return render_template('selectedUser.html', first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous)
+            print("Danger code: " + danger_color_code)
+            return render_template('selectedUser.html', full_response=full_response,first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous, danger_color_code=danger_color_code)
+        else:
+            err = f"Couldn't find records for '{scanned_user}'"
+            return render_template('scanUsers.html', err=err)
     return render_template('scanUsers.html', err=err)
 
 

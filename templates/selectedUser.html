@@ -74,13 +74,15 @@
     </style>
   </head>
   <body>
+    
     <div id="main">
-      {{ first_name }} <br>
-      {{ last_name }} <br>
-      {{ crime }} <br>
-      {{ dangerous }} <br>
-       <br>
-      
+      <center style="color: #26f107"> CRIMINAL RECORDS</center><br><br><br>
+
+      <h3 style="color: #26f107"> FULLL AWS RESPONSE: {{ full_response }}</h3><br>
+      <h3 style="color: #26f107"> FIRST NAME: {{ first_name }}<br></h3>
+      <h3 style="color: #26f107"> CRIME: {{ crime }}<br></h3>
+      <h3 style="color: #26f107"> LAST NAME: {{ last_name }}<br></h3>
+      <h3 style="color: {{ danger_color_code }}"> IS CURRENTLY DANGEROUS: {{ dangerous }}<br></h3>
       <div id="border"></div>
     </div>
   </body>
