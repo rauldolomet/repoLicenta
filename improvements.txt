@@ -1,0 +1,16 @@
+autocomplete off pe formuri
+
+o pagina de 404
+
+adaugat si diferentiat poe security levels
+
+la inserare de record nou si la cautare -> dupa UUID nu dupa nume
+
+butoane de return home (sau alte rute) unde e necesar pe rute
+
+Dupa diferentierea pe security levels, add new user - in usersTable cu sec_lvl <= current_user
+
+
+
+ 
+

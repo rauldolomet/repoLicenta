@@ -8,6 +8,7 @@ import boto3
 import key_config as keys
 import time
 from boto3.dynamodb.conditions import Key
+import bcrypt
 app = Flask(__name__)
 
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -65,14 +66,20 @@ def login():
     error = None
 
     if request.method == 'POST':
-        if request.form.get('username') in users.keys() and request.form.get('password') == users.get(request.form.get('username')):
-            user_details = {
-                'user': request.form.get('username'),
-                'password': len(str(request.form.get('password'))) * '*' if request.form.get('username') != 'admin' else request.form.get('password'),
-                'logged_in_at': datetime.now(),
-                'user_type': 'basic' if request.form.get('username') not in priviledged_users else 'priviledged'
-            }
-            return redirect(url_for('homepage'))
+        username = request.form.get('username')
+        password = request.form.get('password')
+        salt = bcrypt.gensalt()
+        pass_hash = bcrypt.hashpw(str(password).encode('utf-8'), salt)
+        client = boto3.resource('dynamodb')
+        table = client.Table('usersTable')
+        user_exists = table.query(KeyConditionExpression=Key('username').eq(str(username)))
+        if len(user_exists['Items']) > 0:
+            for user in user_exists['Items']:
+                if bcrypt.checkpw(str(password).encode('utf-8'), user['pass_hash'].encode('utf-8')):
+                    return redirect(url_for('homepage'))
+                else:
+                    error = "Invalid credentials. Username or password not found ! "
+                    return render_template('login.html', error=error)
         else:
             error = "Invalid credentials -> Username or password not found ! "
     return render_template('login.html', error=error)
