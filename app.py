@@ -10,7 +10,8 @@ import time
 from boto3.dynamodb.conditions import Key
 import bcrypt
 import os
-import geocoder, folium
+import geocoder
+import folium
 
 app = Flask(__name__)
 
@@ -21,17 +22,18 @@ app.config['SESSION_TYPE'] = 'filesystem'
     This will redirect to the login page.
     Without a default route, one would
     first hit the 404 Not Found page,
-    having to manually navigate to the 
+    having to manually navigate to the
     login route
 '''
 
+
 @app.route('/')
-def default():                          
+def default():
     return redirect(url_for('login'))
 
 
 '''
-The login route will check for 
+The login route will check for
 the users input to establish the level of access they
 are granted and returns a details page with either partially
 clasiified information or fully disclosed data depending on
@@ -50,10 +52,12 @@ def login():
         pass_hash = bcrypt.hashpw(str(password).encode('utf-8'), salt)
         client = boto3.resource('dynamodb')
         table = client.Table('usersTable')
-        user_exists = table.query(KeyConditionExpression=Key('username').eq(str(username)))
+        user_exists = table.query(
+            KeyConditionExpression=Key('username').eq(str(username)))
         if len(user_exists['Items']) > 0:
             for user in user_exists['Items']:
-                if bcrypt.checkpw(str(password).encode('utf-8'), user['pass_hash'].encode('utf-8')):
+                if bcrypt.checkpw(str(password).encode('utf-8'),
+                                  user['pass_hash'].encode('utf-8')):
                     return redirect(url_for('homepage'))
                 else:
                     error = "Invalid credentials. Username or password not found ! "
@@ -65,7 +69,7 @@ def login():
 
 '''
 The home route leads to the "homepage" of
-the project. This is where the user decides whether 
+the project. This is where the user decides whether
 they want to create a new entry in the system
 or scan for an already existing user
 '''
@@ -82,22 +86,23 @@ def homepage():
 
 '''
 The first choice of the two presented in the homepage
-is te scanning one. This will search througth the 
-linked database filtering based on the keywords 
+is te scanning one. This will search througth the
+linked database filtering based on the keywords
 the users enter and either return an err message
 or a(some) record(s) found
 '''
 
 
-@app.route('/scan', methods=['GET','POST'])
+@app.route('/scan', methods=['GET', 'POST'])
 def scanUsers():
     err = None
-    danger_color_code=None
+    danger_color_code = None
     if request.method == 'GET':
         scanned_user = request.args.get('uuid')
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
-        response = table.query(KeyConditionExpression=Key('uuid').eq(scanned_user))
+        response = table.query(
+            KeyConditionExpression=Key('uuid').eq(scanned_user))
         if len(response['Items']) > 0:
             full_response = response
             uuid = response['Items'][0]['uuid']
@@ -109,26 +114,37 @@ def scanUsers():
             print("User scanned : " + str(scanned_user))
             print("Response aws: " + str(response['Items']))
             print("Danger code: " + danger_color_code)
-            return render_template('selectedUser.html', full_response=full_response, uuid=uuid, first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous, danger_color_code=danger_color_code)
+            return render_template(
+                'selectedUser.html',
+                full_response=full_response,
+                uuid=uuid,
+                first_name=first_name,
+                last_name=last_name,
+                crime=crime,
+                dangerous=dangerous,
+                danger_color_code=danger_color_code)
         else:
             err = f"Couldn't find records for '{scanned_user}'"
             return render_template('scanUsers.html', err=err)
     return render_template('scanUsers.html', err=err)
 
+
 @app.route('/alert', methods=['GET', 'POST'])
 def alertFellonPresence():
-    location= None
+    location = None
     if request.method == 'POST':
         location = str(geocoder.ip("me").latlng)
         latitude = geocoder.ip("me").latlng[0]
         longitude = geocoder.ip("me").latlng[1]
         print("Location: " + str(location))
-    return render_template('alertAuthorities.html', latitude=latitude, longitude=longitude)
+    return render_template('alertAuthorities.html',
+                           latitude=latitude, longitude=longitude)
+
 
 '''
 The other option available for the moment is
-creating a new entry in the system. This route 
-allows the user to register a new dataset into the system which 
+creating a new entry in the system. This route
+allows the user to register a new dataset into the system which
 willa utomatically be loaded into the AWS Database
 '''
 
@@ -140,20 +156,22 @@ def createUsers():
     last_name = request.form.get('last_name')
     uuid = request.form.get('uuid')
     crime = request.form.get('crime')
-    represents_immediate_danger = request.form.get('represents_immediate_danger')
+    represents_immediate_danger = request.form.get(
+        'represents_immediate_danger')
     if request.method == 'POST':
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
-        input={
-                'uuid': uuid if uuid is not None else "*",
-                'first_name': first_name if first_name is not None else "*",
-                'last_name': last_name if last_name is not None else "*",
-                'crime': crime if crime is not None else "*",
-                'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
+        input = {
+            'uuid': uuid if uuid is not None else "*",
+            'first_name': first_name if first_name is not None else "*",
+            'last_name': last_name if last_name is not None else "*",
+            'crime': crime if crime is not None else "*",
+            'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
         table.put_item(Item=input)
-        table.delete_item(Key={'uuid':'*'})
+        table.delete_item(Key={'uuid': '*'})
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
