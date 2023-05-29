@@ -13,52 +13,28 @@ app = Flask(__name__)
 
 app.config['SESSION_TYPE'] = 'filesystem'
 
-'''
-Define some basic level users.
-These users will only benefit from a restricted
-access level.
-'''
-
-users = {
-    'ted' : 'bundy',
-    'raul': 'Raul1611@',
-    'alex': 'alex',
-    'steph': 'steph',
-    'admin': 'admin'
-}
-
-'''
-Define some special "priviledged" users.
-These users will have increased access level.
-'''
-
-priviledged_users = {
-    'admin': 'admin'
-}
-
-
-'''
-Create a default route.
-This will redirect to the login page.
-Without a default route, one would
-first hit the 404 Not Found page,
-having to manually navigate to the 
-login route
-'''
 
 
 @app.route('/')
-def default():
+def default():                          '''
+                                            Create a default route.
+                                            This will redirect to the login page.
+                                            Without a default route, one would
+                                            first hit the 404 Not Found page,
+                                            having to manually navigate to the 
+                                            login route
+                                        '''
+
     return redirect(url_for('login'))
 
 
-'''
-The login route will check for 
-the users input to establish the level of access they
-are granted and returns a details page with either partially
-clasiified information or fully disclosed data depending on
-the user's permissions
-'''
+                                                                    '''
+                                                                    The login route will check for 
+                                                                    the users input to establish the level of access they
+                                                                    are granted and returns a details page with either partially
+                                                                    clasiified information or fully disclosed data depending on
+                                                                    the user's permissions
+                                                                    '''
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -85,12 +61,12 @@ def login():
     return render_template('login.html', error=error)
 
 
-'''
-The home route leads to the "homepage" of
-the project. This is where the user decides whether 
-they want to create a new entry in the system
-or scan for an already existing user
-'''
+                                                                            '''
+                                                                            The home route leads to the "homepage" of
+                                                                            the project. This is where the user decides whether 
+                                                                            they want to create a new entry in the system
+                                                                            or scan for an already existing user
+                                                                            '''
 
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -102,13 +78,13 @@ def homepage():
     return render_template('homepage.html')
 
 
-'''
-The first choice of the two presented in the homepage
-is te scanning one. This will search througth the 
-linked database filtering based on the keywords 
-the users enter and either return an err message
-or a(some) record(s) found
-'''
+                                                                            '''
+                                                                            The first choice of the two presented in the homepage
+                                                                            is te scanning one. This will search througth the 
+                                                                            linked database filtering based on the keywords 
+                                                                            the users enter and either return an err message
+                                                                            or a(some) record(s) found
+                                                                            '''
 
 
 @app.route('/scan', methods=['GET','POST'])
@@ -138,12 +114,12 @@ def scanUsers():
     return render_template('scanUsers.html', err=err)
 
 
-'''
-The other option available for the moment is
-creating a new entry in the system. This route 
-allows the user to register a new dataset into the system which 
-willa utomatically be loaded into the AWS Database
-'''
+                                                                                '''
+                                                                                The other option available for the moment is
+                                                                                creating a new entry in the system. This route 
+                                                                                allows the user to register a new dataset into the system which 
+                                                                                willa utomatically be loaded into the AWS Database
+                                                                                '''
 
 
 @app.route('/create', methods=['GET', 'POST'])
