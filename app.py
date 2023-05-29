@@ -81,7 +81,7 @@ def login():
                     error = "Invalid credentials. Username or password not found ! "
                     return render_template('login.html', error=error)
         else:
-            error = "Invalid credentials -> Username or password not found ! "
+            error = "Invalid credentials. Username or password not found ! "
     return render_template('login.html', error=error)
 
 
@@ -116,10 +116,10 @@ def scanUsers():
     err = None
     danger_color_code=None
     if request.method == 'GET':
-        scanned_user = request.args.get('username')
+        scanned_user = request.args.get('uuid')
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
-        response = table.query(KeyConditionExpression=Key('first_name').eq(str(scanned_user)))
+        response = table.query(KeyConditionExpression=Key('uuid').eq(scanned_user))
         if len(response['Items']) > 0:
             full_response = response
             first_name = response['Items'][0]['first_name']
@@ -150,21 +150,21 @@ def createUsers():
     msg = None
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
+    uuid = request.form.get('uuid')
     crime = request.form.get('crime')
     represents_immediate_danger = request.form.get('represents_immediate_danger')
     if request.method == 'POST':
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
         input={
+                'uuid': uuid if uuid is not None else "*",
                 'first_name': first_name if first_name is not None else "*",
                 'last_name': last_name if last_name is not None else "*",
                 'crime': crime if crime is not None else "*",
                 'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
         table.put_item(Item=input)
-        table.delete_item(Key={'first_name':'*'})
-    if first_name is not None and last_name is not None: 
+        table.delete_item(Key={'uuid':'*'}) 
         msg = "Successfully added " + str(first_name) + " " + str(last_name)
-        time.sleep(2)
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
 

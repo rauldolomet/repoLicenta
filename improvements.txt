@@ -1,16 +1,21 @@
-autocomplete off pe formuri
+autocomplete off pe formuri                                                                                                 Status: DONE
 
-o pagina de 404
+o pagina de 404                                                                                                             Status: In progress
 
-adaugat si diferentiat poe security levels
+adaugat si diferentiat poe security levels                                                                                  Status: In progress
 
-la inserare de record nou si la cautare -> dupa UUID nu dupa nume
+la inserare de record nou si la cautare -> dupa UUID nu dupa nume                                                           Status: DONE
 
-butoane de return home (sau alte rute) unde e necesar pe rute
+butoane de return home (sau alte rute) unde e necesar pe rute                                                               Status: In progress
 
-Dupa diferentierea pe security levels, add new user - in usersTable cu sec_lvl <= current_user
+Dupa diferentierea pe security levels, add new user - in usersTable cu sec_lvl <= current_user                              Status: In progress
 
-comentarii pe fiecare ruta / functie
+comentarii pe fiecare ruta / functie                                                                                        Status: In progress
+
+la cei currently dangerous => buton de alert now -> trimite alerta(mail sau alta varianta) la o adresa de urgenta           
+cu locatia si timpul la care a fost vazut infractorul                                                                       Status: In progress
+
+
 
  
 
