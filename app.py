@@ -13,28 +13,27 @@ app = Flask(__name__)
 
 app.config['SESSION_TYPE'] = 'filesystem'
 
-
+                                                                            '''
+                                                                            Create a default route.
+                                                                            This will redirect to the login page.
+                                                                            Without a default route, one would
+                                                                            first hit the 404 Not Found page,
+                                                                            having to manually navigate to the 
+                                                                            login route
+                                                                            '''
 
 @app.route('/')
-def default():                          '''
-                                            Create a default route.
-                                            This will redirect to the login page.
-                                            Without a default route, one would
-                                            first hit the 404 Not Found page,
-                                            having to manually navigate to the 
-                                            login route
-                                        '''
-
+def default():                          
     return redirect(url_for('login'))
 
 
-                                                                    '''
-                                                                    The login route will check for 
-                                                                    the users input to establish the level of access they
-                                                                    are granted and returns a details page with either partially
-                                                                    clasiified information or fully disclosed data depending on
-                                                                    the user's permissions
-                                                                    '''
+                                                                            '''
+                                                                            The login route will check for 
+                                                                            the users input to establish the level of access they
+                                                                            are granted and returns a details page with either partially
+                                                                            clasiified information or fully disclosed data depending on
+                                                                            the user's permissions
+                                                                            '''
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -114,12 +113,12 @@ def scanUsers():
     return render_template('scanUsers.html', err=err)
 
 
-                                                                                '''
-                                                                                The other option available for the moment is
-                                                                                creating a new entry in the system. This route 
-                                                                                allows the user to register a new dataset into the system which 
-                                                                                willa utomatically be loaded into the AWS Database
-                                                                                '''
+                                                                            '''
+                                                                            The other option available for the moment is
+                                                                            creating a new entry in the system. This route 
+                                                                            allows the user to register a new dataset into the system which 
+                                                                            willa utomatically be loaded into the AWS Database
+                                                                            '''
 
 
 @app.route('/create', methods=['GET', 'POST'])
