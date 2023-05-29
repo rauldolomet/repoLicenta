@@ -122,6 +122,7 @@ def scanUsers():
         response = table.query(KeyConditionExpression=Key('uuid').eq(scanned_user))
         if len(response['Items']) > 0:
             full_response = response
+            uuid = response['Items'][0]['uuid']
             first_name = response['Items'][0]['first_name']
             last_name = response['Items'][0]['last_name']
             crime = response['Items'][0]['crime']
@@ -130,7 +131,7 @@ def scanUsers():
             print("User scanned : " + str(scanned_user))
             print("Response aws: " + str(response['Items']))
             print("Danger code: " + danger_color_code)
-            return render_template('selectedUser.html', full_response=full_response,first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous, danger_color_code=danger_color_code)
+            return render_template('selectedUser.html', full_response=full_response, uuid=uuid, first_name=first_name, last_name=last_name, crime=crime, dangerous=dangerous, danger_color_code=danger_color_code)
         else:
             err = f"Couldn't find records for '{scanned_user}'"
             return render_template('scanUsers.html', err=err)
