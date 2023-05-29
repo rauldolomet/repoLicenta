@@ -54,25 +54,16 @@
 
 <style>
   .zoom {
-    position: relative;
-    left: 950px;
-    border-color : #26f107; 
-    background-color: black; 
-    color : #26f107; 
-    border-radius: 12px; 
-    width: 200px; 
-    height: 50px; 
-    font-weight: bold;
     padding: 0px;
     background-color: black;
-    transition: transform .2s; /* Animation */
+    transition: transform .2s;
+     /* Animation */
     
   }
   
   .zoom:hover {
-    color: red;
-    border-color: red;
-    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    transform: scale(1.5);
+    /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     
   }
   </style>
@@ -82,18 +73,13 @@
   <body>
     
     <div id="main">
-      <center style="color: #26f107;"> CRIMINAL RECORDS</center><br><br><br>
-      <h5 style="color: #26f107"> FULLL AWS RESPONSE: {{ full_response }} </h5><br>
-      <h3 style="color: #26f107"> SSN: {{ uuid }}<br></h3>
-      <h3 style="color: #26f107"> FIRST NAME: {{ first_name }}<br></h3>
-      <h3 style="color: #26f107"> CRIME: {{ crime }}<br></h3>
-      <h3 style="color: #26f107"> LAST NAME: {{ last_name }}<br></h3>
-      <h3 style="color: {{ danger_color_code }}"> IS CURRENTLY DANGEROUS: {{ dangerous }}<br></h3>
+      <center style="color: #26f107;"> LOCATING HOSTILE PRESENCE </center><br><br><br>
+      <h3 style="color: #26f107"> Coordinates of your current location:</h3><br>
+      <h3 style="color: #26f107"> Latitude: {{ latitude }}&deg </h3><br>
+      <h3 style="color: #26f107"> Longitude: {{ longitude }}&deg  </h3><br>
+      <h3 style="color: #26f107"> Alerting authorities about the hostile presence ... </h3><br>
       <div id="border"></div>
     </div>
-    <form action="alert", method="post">
-      <button class="zoom" type="submit" name="alert_users">ALERT PRESENCE</button>
-      <br><br>
-    </form>
+    
   </body>
 </html>

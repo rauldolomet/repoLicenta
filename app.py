@@ -9,31 +9,34 @@ import key_config as keys
 import time
 from boto3.dynamodb.conditions import Key
 import bcrypt
+import os
+import geocoder, folium
+
 app = Flask(__name__)
 
 app.config['SESSION_TYPE'] = 'filesystem'
 
-                                                                            '''
-                                                                            Create a default route.
-                                                                            This will redirect to the login page.
-                                                                            Without a default route, one would
-                                                                            first hit the 404 Not Found page,
-                                                                            having to manually navigate to the 
-                                                                            login route
-                                                                            '''
+'''
+    Create a default route.
+    This will redirect to the login page.
+    Without a default route, one would
+    first hit the 404 Not Found page,
+    having to manually navigate to the 
+    login route
+'''
 
 @app.route('/')
 def default():                          
     return redirect(url_for('login'))
 
 
-                                                                            '''
-                                                                            The login route will check for 
-                                                                            the users input to establish the level of access they
-                                                                            are granted and returns a details page with either partially
-                                                                            clasiified information or fully disclosed data depending on
-                                                                            the user's permissions
-                                                                            '''
+'''
+The login route will check for 
+the users input to establish the level of access they
+are granted and returns a details page with either partially
+clasiified information or fully disclosed data depending on
+the user's permissions
+'''
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -60,12 +63,12 @@ def login():
     return render_template('login.html', error=error)
 
 
-                                                                            '''
-                                                                            The home route leads to the "homepage" of
-                                                                            the project. This is where the user decides whether 
-                                                                            they want to create a new entry in the system
-                                                                            or scan for an already existing user
-                                                                            '''
+'''
+The home route leads to the "homepage" of
+the project. This is where the user decides whether 
+they want to create a new entry in the system
+or scan for an already existing user
+'''
 
 
 @app.route('/home', methods=['GET', 'POST'])
@@ -77,13 +80,13 @@ def homepage():
     return render_template('homepage.html')
 
 
-                                                                            '''
-                                                                            The first choice of the two presented in the homepage
-                                                                            is te scanning one. This will search througth the 
-                                                                            linked database filtering based on the keywords 
-                                                                            the users enter and either return an err message
-                                                                            or a(some) record(s) found
-                                                                            '''
+'''
+The first choice of the two presented in the homepage
+is te scanning one. This will search througth the 
+linked database filtering based on the keywords 
+the users enter and either return an err message
+or a(some) record(s) found
+'''
 
 
 @app.route('/scan', methods=['GET','POST'])
@@ -112,13 +115,22 @@ def scanUsers():
             return render_template('scanUsers.html', err=err)
     return render_template('scanUsers.html', err=err)
 
+@app.route('/alert', methods=['GET', 'POST'])
+def alertFellonPresence():
+    location= None
+    if request.method == 'POST':
+        location = str(geocoder.ip("me").latlng)
+        latitude = geocoder.ip("me").latlng[0]
+        longitude = geocoder.ip("me").latlng[1]
+        print("Location: " + str(location))
+    return render_template('alertAuthorities.html', latitude=latitude, longitude=longitude)
 
-                                                                            '''
-                                                                            The other option available for the moment is
-                                                                            creating a new entry in the system. This route 
-                                                                            allows the user to register a new dataset into the system which 
-                                                                            willa utomatically be loaded into the AWS Database
-                                                                            '''
+'''
+The other option available for the moment is
+creating a new entry in the system. This route 
+allows the user to register a new dataset into the system which 
+willa utomatically be loaded into the AWS Database
+'''
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -139,8 +151,7 @@ def createUsers():
                 'crime': crime if crime is not None else "*",
                 'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
         table.put_item(Item=input)
-        table.delete_item(Key={'uuid':'*'}) 
-        msg = "Successfully added " + str(first_name) + " " + str(last_name)
+        table.delete_item(Key={'uuid':'*'})
         return redirect(url_for('createUsers'))
     return render_template('createUser.html', msg=msg)
 
