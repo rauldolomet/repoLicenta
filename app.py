@@ -12,6 +12,7 @@ import bcrypt
 import os
 import geocoder
 import folium
+import smtplib
 
 app = Flask(__name__)
 
@@ -131,21 +132,39 @@ def scanUsers():
 
 @app.route('/alert', methods=['GET', 'POST'])
 def alertFellonPresence():
-    location = None
+    message = None
     if request.method == 'POST':
         location = str(geocoder.ip("me").latlng)
         latitude = geocoder.ip("me").latlng[0]
         longitude = geocoder.ip("me").latlng[1]
+        email_message = f'Criminal activity spotted at these coordinates: \n Latitude: {latitude} \n Longitude: {longitude}\n Please take immediate action!'
+        email_subject = 'Hostile presence reported'
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login('rauldolomet@gmail.com', 'bwuuwpqftbrinhsw')
+            msg = f'''
+            Subject: {email_subject}\n\n\n {email_message} \n\n 
+This automated email serves as an urgent alert to inform you about a reported hostile presence in the area. Immediate action is advised to ensure public safety and prevent any potential harm.
+
+
+Please dispatch the appropriate authorities to the location mentioned above to assess the situation, neutralize any threats, and ensure the safety of the community. Swift response and deployment of necessary resources are vital in resolving this situation effectively.
+
+For any additional information or assistance required, please feel free to contact me directly at [Your Contact Information]. I am ready to cooperate fully with law enforcement officials to facilitate a swift resolution.
+
+Thank you for your immediate attention and cooperation in addressing this matter promptly.
+            '''
+            smtp.sendmail('rauldolomet@gmail.com', 'rauldolomet@gmail.com', msg)
+            
+        message = "Alerted authorities via e-mail"
         print("Location: " + str(location))
     return render_template('alertAuthorities.html',
-                           latitude=latitude, longitude=longitude)
+                           latitude=latitude, longitude=longitude, message=message)
 
 
 '''
 The other option available for the moment is
 creating a new entry in the system. This route
 allows the user to register a new dataset into the system which
-willa utomatically be loaded into the AWS Database
+will automatically be loaded into the AWS Database
 '''
 
 

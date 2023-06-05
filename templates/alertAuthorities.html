@@ -78,6 +78,9 @@
       <h3 style="color: #26f107"> Latitude: {{ latitude }}&deg </h3><br>
       <h3 style="color: #26f107"> Longitude: {{ longitude }}&deg  </h3><br>
       <h3 style="color: #26f107"> Alerting authorities about the hostile presence ... </h3><br>
+      {% if message %}
+      <h3 style="color: #26f107"> {{ message }}</h3><br>
+      {% endif %}
       <div id="border"></div>
     </div>
     
