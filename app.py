@@ -13,6 +13,7 @@ import os
 import geocoder
 import folium
 import smtplib
+from email.message import EmailMessage
 
 app = Flask(__name__)
 
@@ -137,27 +138,52 @@ def alertFellonPresence():
         location = str(geocoder.ip("me").latlng)
         latitude = geocoder.ip("me").latlng[0]
         longitude = geocoder.ip("me").latlng[1]
-        email_message = f'Criminal activity spotted at these coordinates: \n Latitude: {latitude} \n Longitude: {longitude}\n Please take immediate action!'
-        email_subject = 'Hostile presence reported'
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login('rauldolomet@gmail.com', 'bwuuwpqftbrinhsw')
-            msg = f'''
-            Subject: {email_subject}\n\n\n {email_message} \n\n 
+        location = geocoder.ip("me").latlng
+        build_map = folium.Map(location=location, zoom_start=12)
+        folium.CircleMarker(
+            location=location,
+            radius=50,
+            popup="Emergency").add_to(build_map)
+        folium.Marker(location=location, popup="Emergency").add_to(build_map)
+        build_map.save("map.html")
+        email_text = f'''
+        \n\n\n \n\n
 This automated email serves as an urgent alert to inform you about a reported hostile presence in the area. Immediate action is advised to ensure public safety and prevent any potential harm.
 
 
 Please dispatch the appropriate authorities to the location mentioned above to assess the situation, neutralize any threats, and ensure the safety of the community. Swift response and deployment of necessary resources are vital in resolving this situation effectively.
 
-For any additional information or assistance required, please feel free to contact me directly at [Your Contact Information]. I am ready to cooperate fully with law enforcement officials to facilitate a swift resolution.
+For any additional information or assistance required, please feel free to contact me directly at this address. I am ready to cooperate fully with law enforcement officials to facilitate a swift resolution.
 
 Thank you for your immediate attention and cooperation in addressing this matter promptly.
             '''
-            smtp.sendmail('rauldolomet@gmail.com', 'rauldolomet@gmail.com', msg)
-            
+
+        sender = "rauldolomet@gmail.com"
+        recipient = "rauldolomet@gmail.com"
+        message = email_text
+        email = EmailMessage()
+        email["From"] = sender
+        email["To"] = recipient
+        email["Subject"] = "Hostile presence alert"
+        email.set_content(message, subtype="html")
+        with open("./map.html", "r") as m:
+            email.add_alternative(
+                m.read(),
+                filename="map.html",
+                subtype="html"
+            )
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(sender, "bwuuwpqftbrinhsw")
+            smtp.sendmail(sender, recipient, email.as_string())
+            smtp.quit()
         message = "Alerted authorities via e-mail"
         print("Location: " + str(location))
-    return render_template('alertAuthorities.html',
-                           latitude=latitude, longitude=longitude, message=message)
+    return render_template(
+        'alertAuthorities.html',
+        latitude=latitude,
+        longitude=longitude,
+        message=message)
 
 
 '''
