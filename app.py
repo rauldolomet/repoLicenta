@@ -15,9 +15,10 @@ import folium
 import smtplib
 from email.message import EmailMessage
 
+
 app = Flask(__name__)
 
-app.config['SESSION_TYPE'] = 'filesystem'
+
 
 '''
     Create a default route.
@@ -54,12 +55,19 @@ def login():
         pass_hash = bcrypt.hashpw(str(password).encode('utf-8'), salt)
         client = boto3.resource('dynamodb')
         table = client.Table('usersTable')
+        if len(str(username)) == 0:
+            error = "Type in a username"
+            return render_template('login.html', error=error)
+        if len(str(password)) == 0:
+            error = "Type in the password"
+            return render_template('login.html', error=error)
         user_exists = table.query(
             KeyConditionExpression=Key('username').eq(str(username)))
         if len(user_exists['Items']) > 0:
             for user in user_exists['Items']:
                 if bcrypt.checkpw(str(password).encode('utf-8'),
                                   user['pass_hash'].encode('utf-8')):
+                    # session['login_is_ok'] = True
                     return redirect(url_for('homepage'))
                 else:
                     error = "Invalid credentials. Username or password not found ! "
@@ -79,11 +87,14 @@ or scan for an already existing user
 
 @app.route('/home', methods=['GET', 'POST'])
 def homepage():
-    if request.method == 'POST' and request.form.get('action') == 'scan':
-        return redirect(url_for('scanUsers'))
-    if request.method == 'POST' and request.form.get('action') == 'create':
-        return redirect(url_for('createUsers'))
-    return render_template('homepage.html')
+   # if session.get('login_is_ok') == True:
+        if request.method == 'POST' and request.form.get('action') == 'scan':
+            return redirect(url_for('scanUsers'))
+        if request.method == 'POST' and request.form.get('action') == 'create':
+            return redirect(url_for('createUsers'))
+        return render_template('homepage.html')
+    # else:
+    #     return redirect(url_for('login'))
 
 
 '''
@@ -212,6 +223,21 @@ def createUsers():
             'last_name': last_name if last_name is not None else "*",
             'crime': crime if crime is not None else "*",
             'represents_immediate_danger': represents_immediate_danger if represents_immediate_danger is not None else "*"}
+        if any(character.isnumeric() for character in str(first_name)):
+            msg = "Names can not contain numbers! "
+            return render_template('createUser.html', msg=msg)
+        if any(character.isnumeric() for character in str(last_name)):
+            msg = "Names can not contain numbers! "
+            return render_template('createUser.html', msg=msg)
+        if any(character.isalpha() for character in str(uuid)):
+            msg = "SSN can only contain numbers (0-9)"
+            return render_template('createUser.html', msg=msg)
+        if len(str(first_name)) == 0:
+            msg = "First name can not be empty. Type in a first name"
+            return render_template('createUser.html', msg=msg)
+        if len(str(last_name)) == 0:
+            msg = "Last name can not be empty. Type in a first name"
+            return render_template('createUser.html', msg=msg)
         table.put_item(Item=input)
         table.delete_item(Key={'uuid': '*'})
         return redirect(url_for('createUsers'))

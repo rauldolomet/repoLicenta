@@ -5,7 +5,7 @@
     <title>Title of the document</title>
     <style>
       body {
-        padding: 40px;
+        padding: 10px;
         background-color: black;
       }
       #main {
@@ -17,6 +17,7 @@
         color: #26f107;
         position: relative;
       }
+      
       #border {
         border-bottom: solid 3px rgba(0, 255, 0, .75);
         position: absolute;
@@ -37,8 +38,8 @@
           width: 0;
         }
         to {
-          width: 2000px;
-          height: 750px;
+          width: 100%;
+          height: 100%;
         }
       }
       /* cursor animations */
@@ -55,7 +56,7 @@
 <style>
   .zoom {
     position: relative;
-    left: 950px;
+    left: 650px;
     border-color : #26f107; 
     background-color: black; 
     color : #26f107; 
@@ -66,6 +67,7 @@
     padding: 0px;
     background-color: black;
     transition: transform .2s; /* Animation */
+    /*display: flex;*/
     
   }
   
@@ -80,20 +82,24 @@
 
   </head>
   <body>
-    
-    <div id="main">
-      <center style="color: #26f107;"> CRIMINAL RECORDS</center><br><br><br>
-      <h5 style="color: #26f107"> FULLL AWS RESPONSE: {{ full_response }} </h5><br>
-      <h3 style="color: #26f107"> SSN: {{ uuid }}<br></h3>
-      <h3 style="color: #26f107"> FIRST NAME: {{ first_name }}<br></h3>
-      <h3 style="color: #26f107"> CRIME: {{ crime }}<br></h3>
-      <h3 style="color: #26f107"> LAST NAME: {{ last_name }}<br></h3>
+    <div style="margin: 0px">
+    <center><h1 style="color: #26f107; font-weight: bold;"> {{ first_name }} &nbsp;&nbsp;&nbsp; {{ last_name }}</h1></center>
+    </div>
+    <div id="main" style="margin:0px">
+      <center style="color: #26f107;"> CRIMINAL RECORDS</center>
+      <h5 style="color: #26f107"> FULLL AWS RESPONSE: {{ full_response }} </h5>
+      <h3 style="color: #26f107"> SSN &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ uuid }}<br></h3>
+      <h3 style="color: #26f107"> FIRST NAME &nbsp; &nbsp;: {{ first_name }}<br></h3>
+      <h3 style="color: #26f107"> CRIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ crime }}<br></h3>
+      <h3 style="color: #26f107"> LAST NAME &nbsp;&nbsp;&nbsp;&nbsp;: {{ last_name }}<br></h3>
       <h3 style="color: {{ danger_color_code }}"> IS CURRENTLY DANGEROUS: {{ dangerous }}<br></h3>
       <div id="border"></div>
-    </div>
+    </div><br><br><br>
+    <div id = "main" style="margin: 0px">
     <form action="alert", method="post">
       <button class="zoom" type="submit" name="alert_users">ALERT PRESENCE</button>
       <br><br>
     </form>
+  </div>
   </body>
 </html>
