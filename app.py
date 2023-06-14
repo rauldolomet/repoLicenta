@@ -14,10 +14,19 @@ import geocoder
 import folium
 import smtplib
 from email.message import EmailMessage
+from flask_session import Session
 
-
+'''
+    In order to validate the user's identitty
+    and have this a condition for passing the login 
+    process, we'll keep a session alive allowing information to flow 
+    inbetween routes
+'''
 app = Flask(__name__)
-
+app.config['SESSION_TYPE'] = 'filesystem'
+app.secret_key = str(os.urandom(24))
+app.config.update(SECRET_KEY=os.urandom(24))
+Session(app)
 
 
 '''
@@ -37,10 +46,11 @@ def default():
 
 '''
 The login route will check for
-the users input to establish the level of access they
-are granted and returns a details page with either partially
-clasiified information or fully disclosed data depending on
-the user's permissions
+an existing identity to match the input inside the users table
+in AWS. The username is verified as a string value. The password is hashed
+using bcrypt to which a randomly generated salt is added. Both the parameters
+are verified against an identity found in AWS and depending on the validity
+the login is either passed or failed. 
 '''
 
 
@@ -67,7 +77,7 @@ def login():
             for user in user_exists['Items']:
                 if bcrypt.checkpw(str(password).encode('utf-8'),
                                   user['pass_hash'].encode('utf-8')):
-                    # session['login_is_ok'] = True
+                    session['login_is_ok'] = True
                     return redirect(url_for('homepage'))
                 else:
                     error = "Invalid credentials. Username or password not found ! "
@@ -87,14 +97,14 @@ or scan for an already existing user
 
 @app.route('/home', methods=['GET', 'POST'])
 def homepage():
-   # if session.get('login_is_ok') == True:
+    if session.get('login_is_ok') == True:
         if request.method == 'POST' and request.form.get('action') == 'scan':
             return redirect(url_for('scanUsers'))
         if request.method == 'POST' and request.form.get('action') == 'create':
             return redirect(url_for('createUsers'))
         return render_template('homepage.html')
-    # else:
-    #     return redirect(url_for('login'))
+    else:
+        return redirect(url_for('login'))
 
 
 '''
@@ -159,14 +169,17 @@ def alertFellonPresence():
         build_map.save("map.html")
         email_text = f'''
         \n\n\n \n\n
-This automated email serves as an urgent alert to inform you about a reported hostile presence in the area. Immediate action is advised to ensure public safety and prevent any potential harm.
+This automated email serves as an urgent alert to inform you about a reported hostile presence in the area. Immediate action is advised to ensure public safety and prevent any potential harm.\n
 
 
-Please dispatch the appropriate authorities to the location mentioned above to assess the situation, neutralize any threats, and ensure the safety of the community. Swift response and deployment of necessary resources are vital in resolving this situation effectively.
+Please dispatch the appropriate authorities to the location mentioned above to assess the situation, neutralize any threats, and ensure the safety of the community.\n Swift response and deployment of necessary resources are vital in resolving this situation effectively.
 
-For any additional information or assistance required, please feel free to contact me directly at this address. I am ready to cooperate fully with law enforcement officials to facilitate a swift resolution.
+For any additional information or assistance required, please feel free to contact me directly at this address. \nI am ready to cooperate fully with law enforcement officials to facilitate a swift resolution.
 
-Thank you for your immediate attention and cooperation in addressing this matter promptly.
+Thank you for your immediate attention and cooperation in addressing this matter promptly.\n
+Exact coordinates:\n
+Latitude: {str(latitude)}\n
+Longitude: {str(longitude)}
             '''
 
         sender = "rauldolomet@gmail.com"
@@ -237,6 +250,15 @@ def createUsers():
             return render_template('createUser.html', msg=msg)
         if len(str(last_name)) == 0:
             msg = "Last name can not be empty. Type in a first name"
+            return render_template('createUser.html', msg=msg)
+        scanned_user = request.form.get('uuid')
+        client = boto3.resource('dynamodb')
+        table = client.Table('Convicted_Fellons')
+        response = table.query(
+            KeyConditionExpression=Key('uuid').eq(scanned_user))
+        if len(response['Items']) > 0:
+            msg = "This user already exists! No two users can have the same SSN"
+            err_color_code = '#26f107'
             return render_template('createUser.html', msg=msg)
         table.put_item(Item=input)
         table.delete_item(Key={'uuid': '*'})

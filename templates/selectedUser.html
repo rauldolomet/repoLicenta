@@ -74,7 +74,7 @@
   .zoom:hover {
     color: red;
     border-color: red;
-    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     
   }
   </style>
@@ -85,21 +85,19 @@
     <div style="margin: 0px">
     <center><h1 style="color: #26f107; font-weight: bold;"> {{ first_name }} &nbsp;&nbsp;&nbsp; {{ last_name }}</h1></center>
     </div>
-    <div id="main" style="margin:0px">
+    <center><div id="main" style="margin:0px">
       <center style="color: #26f107;"> CRIMINAL RECORDS</center>
-      <h5 style="color: #26f107"> FULLL AWS RESPONSE: {{ full_response }} </h5>
-      <h3 style="color: #26f107"> SSN &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ uuid }}<br></h3>
-      <h3 style="color: #26f107"> FIRST NAME &nbsp; &nbsp;: {{ first_name }}<br></h3>
-      <h3 style="color: #26f107"> CRIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ crime }}<br></h3>
-      <h3 style="color: #26f107"> LAST NAME &nbsp;&nbsp;&nbsp;&nbsp;: {{ last_name }}<br></h3>
-      <h3 style="color: {{ danger_color_code }}"> IS CURRENTLY DANGEROUS: {{ dangerous }}<br></h3>
-      <div id="border"></div>
-    </div><br><br><br>
-    <div id = "main" style="margin: 0px">
+      <h5 style="color: #26f107; text-align: center"> FULLL AWS RESPONSE: {{ full_response }} </h5>
+      <h3 style="color: #26f107; text-align: center"> SSN  &nbsp;&nbsp;&nbsp;&nbsp;: {{ uuid }}<br></h3>
+      <h3 style="color: #26f107; text-align: center"> FIRST NAME &nbsp; &nbsp;: {{ first_name }}<br></h3>
+      <h3 style="color: #26f107; text-align: center"> CRIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ crime }}<br></h3>
+      <h3 style="color: #26f107; text-align: center"> LAST NAME &nbsp;&nbsp;&nbsp;&nbsp;: {{ last_name }}<br></h3>
+      <h3 style="color: {{ danger_color_code }}; text-align: center"> IS CURRENTLY DANGEROUS: {{ dangerous }}<br></h3>
+      <br><br>
+    </div><br></center>
     <form action="alert", method="post">
-      <button class="zoom" type="submit" name="alert_users">ALERT PRESENCE</button>
+      <button  class="zoom" type="submit" name="alert_users">ALERT PRESENCE</button>
       <br><br>
     </form>
-  </div>
   </body>
 </html>
