@@ -57,8 +57,9 @@ the login is either passed or failed.
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
-
+    session['login_is_ok'] = False
     if request.method == 'POST':
+        print("Login session var: "+str(session['login_is_ok']))
         username = request.form.get('username')
         password = request.form.get('password')
         salt = bcrypt.gensalt()
@@ -251,6 +252,9 @@ def createUsers():
         if len(str(last_name)) == 0:
             msg = "Last name can not be empty. Type in a first name"
             return render_template('createUser.html', msg=msg)
+        if str(request.form.get('represents_immediate_danger')).lower() not in ['yes', 'no']:
+            msg = "Please provide a 'yes' or 'no' answer inside the Dangerous field"
+            return render_template('createUser.html', msg=msg)
         scanned_user = request.form.get('uuid')
         client = boto3.resource('dynamodb')
         table = client.Table('Convicted_Fellons')
@@ -267,4 +271,4 @@ def createUsers():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=Ture, port=5000)
