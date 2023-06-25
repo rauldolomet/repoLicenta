@@ -1,0 +1,14 @@
+flask
+json
+fastapi
+datetime
+boto3
+time
+boto3.dynamodb.conditions
+bcrypt
+os
+geocoder
+folium
+smtplib
+email.message
+flask_session
